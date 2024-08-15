@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import Login from "../pages/Login";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsOfService from "../pages/TermsOfService";
 import Products from "../pages/Products";
-import Home from "../pages/Home";
 import HomePage from "../pages/HomePage";
+import Login from "../pages/authentication/Login";
+import Register from "../pages/authentication/Register";
 
 export const router = createBrowserRouter([
   {
@@ -18,10 +18,6 @@ export const router = createBrowserRouter([
         index: true,
         element: <HomePage />,
       },
-      //   {
-      //     path: "/home",
-      //     element: <HomePage />,
-      //   },
       {
         path: "/products",
         element: <Products />,
@@ -47,5 +43,9 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ]);

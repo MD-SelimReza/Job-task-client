@@ -1,7 +1,10 @@
 import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
 
 export default function Navbar() {
+  const { user, logOut, loading } = useAuth();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropDownOpen] = useState(false);
 
   const handleToggleClick = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
@@ -23,9 +26,47 @@ export default function Navbar() {
           <a href="/contact" className="text-white hover:text-gray-300">
             Contact
           </a>
-          <a href="/login" className="text-white hover:text-gray-300">
-            Login
-          </a>
+
+          {!user && !loading ? (
+            <div>
+              <a href="/register" className="text-white hover:text-gray-300">
+                Sign up
+              </a>
+            </div>
+          ) : (
+            <div className="relative">
+              <div
+                onClick={() => setIsDropDownOpen(!isDropdownOpen)}
+                className="rounded-full cursor-pointer hover:shadow-md transition"
+              >
+                <div>
+                  <img
+                    className="rounded-full size-10"
+                    referrerPolicy="no-referrer"
+                    src={user && user.photoURL ? user.photoURL : "Image"}
+                    title={user?.displayName}
+                    alt="profile"
+                    height="30"
+                    width="30"
+                  />
+                </div>
+              </div>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-3 w-48 bg-white rounded-md shadow-lg z-20">
+                  <div className="block px-4 py-2 text-blue-800 hover:bg-gray-200">
+                    {user?.displayName}
+                  </div>
+
+                  <div
+                    onClick={logOut}
+                    className="block px-4 py-2 text-blue-800 hover:bg-gray-200"
+                  >
+                    Logout
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div className="md:hidden flex items-center">
           <button
@@ -74,10 +115,10 @@ export default function Navbar() {
             Contact
           </a>
           <a
-            href="/login"
+            href="/register"
             className="block py-2 px-4 text-sm text-white hover:bg-gray-700"
           >
-            Login
+            Sign up
           </a>
         </div>
       )}
