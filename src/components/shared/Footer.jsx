@@ -5,7 +5,7 @@ export default function Footer() {
         <p>&copy; 2024 JobTASK. All rights reserved.</p>
         <div className="mt-2">
           <a
-            href="/privacy"
+            href="/privacy-policy"
             className="text-sm text-gray-400 hover:text-gray-300 mx-2"
           >
             Privacy Policy
