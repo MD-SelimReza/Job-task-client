@@ -1,4 +1,8 @@
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { useEffect } from "react";
 
 const Login = () => {
   const {
@@ -9,9 +13,39 @@ const Login = () => {
     reset,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
+  const from = location.state?.from?.pathname || "/";
+  const { signInWithGoogle, signIn, user, loading } = useAuth();
+
+  useEffect(() => {
+    if (user && loading) {
+      navigate("/");
+    }
+  }, [user, loading, navigate]);
+
+  const onSubmit = async (data) => {
+    const { email, password } = data;
+    const result = await signIn(email, password);
+
+    if (result?.user) {
+      toast.success("Sign In Successful");
+      navigate(from);
+    }
     reset();
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithGoogle();
+      if (result?.user) {
+        toast.success("Sign In Successful");
+        navigate(from);
+      }
+    } catch (err) {
+      toast.error(err?.message);
+    }
   };
 
   const password = watch("password");
@@ -24,8 +58,8 @@ const Login = () => {
         </h2>
         <p className="text-sm text-center mb-8">
           Have an account?{" "}
-          <a href="#" className="text-blue-600 underline">
-            Login
+          <a href="/register" className="text-blue-600 underline">
+            Sign Up
           </a>
         </p>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -132,6 +166,7 @@ const Login = () => {
           <button
             type="button"
             className="w-[300px] mx-auto bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200 flex items-center justify-center"
+            onClick={handleGoogleSignIn}
           >
             Sign in with Google
           </button>

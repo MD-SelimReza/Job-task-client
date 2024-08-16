@@ -1,18 +1,22 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import About from "../pages/About";
-import Contact from "../pages/Contact";
+import About from "../pages/AboutPage";
+import Contact from "../pages/ContactPage";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import TermsOfService from "../pages/TermsOfService";
-import Products from "../pages/Products";
 import HomePage from "../pages/HomePage";
 import Login from "../pages/authentication/Login";
 import Register from "../pages/authentication/Register";
+import AddProductPage from "../pages/AddProductPage";
+import NotFoundPage from "../pages/NotFoundPage";
+import ProductDetailsPage from "../pages/ProductDetailsPage";
+import ProductsPage from "../pages/ProductsPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true,
@@ -20,7 +24,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/products",
-        element: <Products />,
+        element: <ProductsPage />,
+      },
+      {
+        path: "/product-details/:id",
+        element: <ProductDetailsPage />,
+      },
+      {
+        path: "/add-product",
+        element: <AddProductPage />,
       },
       {
         path: "/about",

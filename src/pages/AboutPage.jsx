@@ -1,6 +1,6 @@
 // src/pages/About.js
 
-const About = () => {
+const AboutPage = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="container mx-auto px-4 py-16">
@@ -90,4 +90,4 @@ const About = () => {
   );
 };
 
-export default About;
+export default AboutPage;

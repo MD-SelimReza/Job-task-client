@@ -21,11 +21,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    const file = data.profilePicture[0]; // Access the uploaded file
-
-    // console.log(data, file);
-
-    // Clear the form and image preview
+    const file = data.profilePicture[0];
 
     const { name, email, password } = data;
     const image_url = await imageUpload(file);
@@ -38,6 +34,7 @@ const Register = () => {
         navigate("/");
         reset();
         setImagePreview(null);
+        window.location.reload();
       }
     } catch (err) {
       toast.error(err?.message);
@@ -71,7 +68,7 @@ const Register = () => {
         </h2>
         <p className="text-sm text-center mb-8">
           Have an account?{" "}
-          <a href="#" className="text-blue-600 underline">
+          <a href="/login" className="text-blue-600 underline">
             Login
           </a>
         </p>

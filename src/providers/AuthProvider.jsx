@@ -12,7 +12,6 @@ import {
 } from "firebase/auth";
 import { app } from "../firebase/firebase.config";
 import axios from "axios";
-import useAxiosCommon from "../hooks/useAxiosCommon";
 import { baseURL } from "../url/baseURL";
 export const AuthContext = createContext(null);
 const auth = getAuth(app);
@@ -21,7 +20,6 @@ const googleProvider = new GoogleAuthProvider();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const axiosCommon = useAxiosCommon();
 
   const createUser = (email, password) => {
     setLoading(true);
@@ -52,15 +50,21 @@ const AuthProvider = ({ children }) => {
 
   // Save user data in db
   const saveUser = async (currentUser) => {
-    console.log(currentUser?.displayName, currentUser?.photoURL);
-    if (currentUser) {
-      const userInfo = {
-        name: currentUser?.displayName,
-        email: currentUser?.email,
-        image: currentUser?.photoURL,
-        badge: "Bronze",
-      };
-      await axios.post(`${baseURL}/user`, userInfo);
+    try {
+      if (currentUser) {
+        const userData = {
+          name: currentUser?.displayName,
+          email: currentUser?.email,
+          profilePicture: currentUser?.photoURL,
+        };
+        const response = await axios.post(`${baseURL}/users`, userData);
+        console.log("User saved successfully:", response.data);
+      }
+    } catch (error) {
+      console.log(
+        "Failed to save user:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -68,29 +72,13 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
-      console.log("currentUser-->", currentUser);
-      if (currentUser) {
-        // await saveUser(currentUser);
-        // get token and store client
-        // const userInfo = { email: currentUser.email };
-        // if (userInfo) {
-        //   await axios.post(`${baseURL}/jwt`, userInfo).then((res) => {
-        //     if (res.data.token) {
-        //       localStorage.setItem("access-token", res.data.token);
-        //     }
-        //   });
-        // }
-      } else {
-        // Remove token if user is logged out
-        setUser(currentUser);
-        // localStorage.removeItem("access-token");
-      }
+      await saveUser(currentUser);
       setLoading(false);
     });
     return () => {
       return unsubscribe();
     };
-  }, [axiosCommon]);
+  }, []);
 
   const authInfo = {
     user,
