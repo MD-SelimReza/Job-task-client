@@ -22,7 +22,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="sm:max-w-sm rounded overflow-hidden shadow-lg bg-white">
       <img
-        className="w-full"
+        className="w-full h-52 border-b"
         src={
           product_image ||
           "https://images.unsplash.com/photo-1719937050679-c3a2c9c67b0f?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxfHx8ZW58MHx8fHx8"
@@ -38,7 +38,27 @@ const ProductCard = ({ product }) => {
         <div className="flex justify-between">
           <div>
             <p className="text-gray-500">Ratings</p>
-            <p className="font-bold">{ratings}</p>
+            <p className="font-bold">
+              <span className="text-yellow-500 flex gap-1">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <svg
+                    key={index}
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`w-5 h-5 ${
+                      index < ratings ? "fill-current" : "text-gray-300"
+                    }`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 17.27L18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21z" />
+                  </svg>
+                ))}
+              </span>
+            </p>
           </div>
           <div>
             <p className="text-gray-500">Price</p>

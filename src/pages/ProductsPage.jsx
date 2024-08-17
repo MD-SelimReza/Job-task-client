@@ -14,10 +14,12 @@ const ProductsPage = () => {
     return <Spinner />;
   }
 
+  const productData = data?.data;
+
   return (
     <section className="bg-blue-50 px-4 py-6">
       <QueryParams />
-      <ProductListings data={data} />
+      <ProductListings data={productData} />
     </section>
   );
 };

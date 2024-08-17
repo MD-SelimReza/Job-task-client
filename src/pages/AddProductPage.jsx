@@ -27,7 +27,6 @@ const AddProductPage = () => {
       description,
       category,
       ratings,
-      product_creation_date: new Date().toISOString(),
     };
 
     try {

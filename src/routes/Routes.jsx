@@ -11,6 +11,7 @@ import AddProductPage from "../pages/AddProductPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import ProductDetailsPage from "../pages/ProductDetailsPage";
 import ProductsPage from "../pages/ProductsPage";
+import UpdateProductPage from "../pages/UpdateProductPage";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "/add-product",
         element: <AddProductPage />,
+      },
+      {
+        path: "/update-product/:id",
+        element: <UpdateProductPage />,
       },
       {
         path: "/about",

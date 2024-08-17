@@ -1,8 +1,14 @@
 /* eslint-disable react/prop-types */
 import ProductCard from "./ProductCard";
+import Spinner from "./Spinner";
 
-const ProductListings = ({ data }) => {
-  const productData = data?.data;
+const ProductListings = ({ data, isLoading }) => {
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  // Ensure productData is an array
+  const productData = Array.isArray(data) ? data : [];
 
   return (
     <section className="bg-blue-50 px-4 py-10">
@@ -12,9 +18,13 @@ const ProductListings = ({ data }) => {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {productData?.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {productData.length > 0 ? (
+            productData.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No products available.</p>
+          )}
         </div>
       </div>
     </section>
