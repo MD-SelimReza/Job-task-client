@@ -30,33 +30,33 @@ const QueryParams = ({ onFilterChange }) => {
     });
   };
 
-  // const handlePriceChange = (e) => {
-  //   const [min, max] = e.target.value.split(",");
-  //   setPriceRange([min, max]);
-  // onFilterChange({
-  //   category: selectedCategory,
-  //   brand: selectedBrand,
-  //   priceRange: [min, max],
-  //   sortOrder,
-  //   searchTerm,
-  // });
-  // };
-
   const handlePriceChange = (e) => {
-    const value = e.target.value;
-    const values = value.split(",").map((val) => val.trim());
-
-    if (values.length <= 2) {
-      setPriceRange(values);
-      onFilterChange({
-        category: selectedCategory,
-        brand: selectedBrand,
-        priceRange: values,
-        sortOrder,
-        searchTerm,
-      });
-    }
+    const [min, max] = e.target.value.split(",");
+    setPriceRange([min, max]);
+    onFilterChange({
+      category: selectedCategory,
+      brand: selectedBrand,
+      priceRange: [min, max],
+      sortOrder,
+      searchTerm,
+    });
   };
+
+  // const handlePriceChange = (e) => {
+  //   const value = e.target.value;
+  //   const values = value.split(",").map((val) => val.trim());
+
+  //   if (values.length <= 2) {
+  //     setPriceRange(values);
+  //     onFilterChange({
+  //       category: selectedCategory,
+  //       brand: selectedBrand,
+  //       priceRange: values,
+  //       sortOrder,
+  //       searchTerm,
+  //     });
+  //   }
+  // };
 
   const handleSortChange = (e) => {
     setSortOrder(e.target.value);
@@ -93,10 +93,14 @@ const QueryParams = ({ onFilterChange }) => {
               onChange={handleCategoryChange}
               className="w-full p-3 border border-gray-300 rounded-md"
             >
-              <option value="">All Categories</option>
+              <option value="">Filter Categories</option>
+              <option value="Personal Care">Personal Care</option>
+              <option value="Clothing">Clothing</option>
               <option value="Electronics">Electronics</option>
-              <option value="Furniture">Furniture</option>
-              {/* Add more categories as needed */}
+              <option value="Outdoor">Outdoor</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Home">Home</option>
+              <option value="Fitness">Fitness</option>
             </select>
           </div>
           <div className="w-full md:w-1/4 mb-4 md:mb-0">
@@ -105,17 +109,17 @@ const QueryParams = ({ onFilterChange }) => {
               onChange={handleBrandChange}
               className="w-full p-3 border border-gray-300 rounded-md"
             >
-              <option value="">All Brands</option>
-              <option value="BrandA">Brand A</option>
-              <option value="BrandB">Brand B</option>
-              {/* Add more brands as needed */}
+              <option value="">Filter Brands</option>
+              <option value="GreenLiving">GreenLiving</option>
+              <option value="EcoWear">EcoWear</option>
+              <option value="SoundMax">SoundMax</option>
+              <option value="BrightHome">BrightHome</option>
             </select>
           </div>
           <div className="w-full md:w-1/4 mb-4 md:mb-0">
             <input
               type="text"
-              // placeholder="Price range (min,max)"
-              placeholder="Search products..."
+              placeholder="Price range (min,max)"
               value={priceRange.join(",")}
               onChange={handlePriceChange}
               className="w-full p-3 border border-gray-300 rounded-md"

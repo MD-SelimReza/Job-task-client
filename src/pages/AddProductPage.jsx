@@ -16,10 +16,9 @@ const AddProductPage = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    const { product_name, price, description, category, ratings } = data;
+    const { product_name, price, description, category, ratings, brand } = data;
     const file = data.product_image[0];
     const product_image = await imageUpload(file);
-    // Add the current date and time to the product creation date
     const newProduct = {
       product_name,
       product_image,
@@ -27,30 +26,23 @@ const AddProductPage = () => {
       description,
       category,
       ratings,
+      brand,
     };
 
     try {
-      // Make a POST request to the backend
       const response = await axios.post(`${baseURL}/products`, newProduct);
-
-      // Handle successful response
       toast.success(response?.data?.message);
-
-      // Redirect to products page
       navigate("/products");
     } catch (error) {
-      // Handle errors
       console.log("There was an error adding the product:", error);
       toast.error("Failed to add product. Please try again.");
     }
   };
 
-  // Update image preview when file is selected
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (file) {
-      setImagePreview(URL.createObjectURL(file)); // Create image preview URL
+      setImagePreview(URL.createObjectURL(file));
     } else {
       setImagePreview(null);
     }
@@ -99,7 +91,7 @@ const AddProductPage = () => {
                   id="product_image"
                   {...register("product_image", { required: true })}
                   className="border rounded w-full py-2 px-3"
-                  onChange={handleImageChange} // Update image preview on change
+                  onChange={handleImageChange}
                 />
                 {errors.product_image && (
                   <p className="text-red-500 text-sm mt-1">
@@ -108,7 +100,6 @@ const AddProductPage = () => {
                 )}
               </div>
 
-              {/* Image Preview */}
               {imagePreview && (
                 <div className="mb-4 text-center">
                   <img
@@ -149,14 +140,15 @@ const AddProductPage = () => {
                 </label>
                 <input
                   type="number"
-                  step="0.01"
                   id="price"
-                  {...register("price", { required: true })}
+                  {...register("price", { required: true, min: 150 })}
                   className="border rounded w-full py-2 px-3"
                   placeholder="Enter product price"
                 />
                 {errors.price && (
-                  <p className="text-red-500 text-sm mt-1">Price is required</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    Price is required and must be at least 150
+                  </p>
                 )}
               </div>
 
@@ -173,12 +165,13 @@ const AddProductPage = () => {
                   className="border rounded w-full py-2 px-3"
                 >
                   <option value="">Select a category</option>
+                  <option value="Personal Care">Personal Care</option>
+                  <option value="Clothing">Clothing</option>
                   <option value="Electronics">Electronics</option>
-                  <option value="Sports & Outdoors">Sports & Outdoors</option>
-                  <option value="Home & Kitchen">Home & Kitchen</option>
-                  <option value="Home Appliances">Home Appliances</option>
-                  <option value="Apparel">Apparel</option>
-                  <option value="Home Security">Home Security</option>
+                  <option value="Outdoor">Outdoor</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Home">Home</option>
+                  <option value="Fitness">Fitness</option>
                 </select>
                 {errors.category && (
                   <p className="text-red-500 text-sm mt-1">
@@ -186,6 +179,30 @@ const AddProductPage = () => {
                   </p>
                 )}
               </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="brand"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Brand
+                </label>
+                <select
+                  id="brand"
+                  {...register("brand", { required: true })}
+                  className="border rounded w-full py-2 px-3"
+                >
+                  <option value="">Select a brand</option>
+                  <option value="GreenLiving">GreenLiving</option>
+                  <option value="EcoWear">EcoWear</option>
+                  <option value="SoundMax">SoundMax</option>
+                  <option value="BrightHome">BrightHome</option>
+                </select>
+                {errors.brand && (
+                  <p className="text-red-500 text-sm mt-1">Brand is required</p>
+                )}
+              </div>
+
               <div className="mb-4">
                 <label
                   htmlFor="ratings"
@@ -195,7 +212,6 @@ const AddProductPage = () => {
                 </label>
                 <input
                   type="number"
-                  step="0.5"
                   id="ratings"
                   {...register("ratings", {
                     required: true,

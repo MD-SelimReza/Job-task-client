@@ -12,13 +12,20 @@ const UpdateProductPage = () => {
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState(null);
 
-  const { data } = useQuery("productData", () => {
+  const { data } = useQuery(["productData", id], () => {
     return axios.get(`${baseURL}/products/${id}`);
   });
 
   const product = data?.data || {};
-  const { product_name, product_image, description, price, category, ratings } =
-    product;
+  const {
+    product_name,
+    product_image,
+    description,
+    price,
+    category,
+    ratings,
+    brand,
+  } = product;
 
   const {
     register,
@@ -27,54 +34,38 @@ const UpdateProductPage = () => {
   } = useForm();
 
   const onSubmit = async (formData) => {
-    const product_name2 = formData.product_name || product_name; // Fallback to original value if not changed
-    const price2 = formData.price || price;
-    const description2 = formData.description || description;
-    const category2 = formData.category || category;
-    const ratings2 = formData.ratings || ratings;
-
-    let product_image2 = product_image; // Start with original value
-    if (formData.product_image && formData.product_image.length > 0) {
-      const file = formData.product_image[0];
-      product_image2 = await imageUpload(file); // Upload new image if provided
-    }
-
-    const updateProduct = {
-      product_name: product_name2,
-      product_image: product_image2,
-      price: price2,
-      description: description2,
-      category: category2,
-      ratings: ratings2,
+    const updatedProduct = {
+      product_name: formData.product_name || product_name,
+      price: formData.price || price,
+      description: formData.description || description,
+      category: formData.category || category,
+      ratings: formData.ratings || ratings,
+      brand: formData.brand || brand,
+      product_image: product_image,
     };
 
-    console.log(updateProduct);
+    if (formData.product_image && formData.product_image.length > 0) {
+      const file = formData.product_image[0];
+      updatedProduct.product_image = await imageUpload(file);
+    }
 
     try {
-      // Make a POST request to the backend
       const response = await axios.put(
         `${baseURL}/products/${id}`,
-        updateProduct
+        updatedProduct
       );
-
-      // Handle successful response
       toast.success(response?.data?.message);
-
-      // Redirect to products page
       navigate("/products");
     } catch (error) {
-      // Handle errors
-      console.log("There was an error updating the product:", error);
+      console.error("There was an error updating the product:", error);
       toast.error("Failed to update product. Please try again.");
     }
   };
 
-  // Update image preview when file is selected
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
     if (file) {
-      setImagePreview(URL.createObjectURL(file)); // Create image preview URL
+      setImagePreview(URL.createObjectURL(file));
     } else {
       setImagePreview(null);
     }
@@ -103,6 +94,7 @@ const UpdateProductPage = () => {
                   {...register("product_name")}
                   defaultValue={product_name}
                   className="border rounded w-full py-2 px-3"
+                  placeholder="Enter product name"
                 />
               </div>
 
@@ -118,11 +110,10 @@ const UpdateProductPage = () => {
                   id="product_image"
                   {...register("product_image")}
                   className="border rounded w-full py-2 px-3"
-                  onChange={handleImageChange} // Update image preview on change
+                  onChange={handleImageChange}
                 />
               </div>
 
-              {/* Image Preview */}
               {imagePreview && (
                 <div className="mb-4 text-center">
                   <img
@@ -142,10 +133,11 @@ const UpdateProductPage = () => {
                 </label>
                 <textarea
                   id="description"
-                  defaultValue={description}
                   {...register("description")}
+                  defaultValue={description}
                   className="border rounded w-full py-2 px-3"
                   rows="4"
+                  placeholder="Enter product description"
                 ></textarea>
               </div>
 
@@ -158,15 +150,12 @@ const UpdateProductPage = () => {
                 </label>
                 <input
                   type="number"
-                  step="0.01"
                   id="price"
-                  defaultValue={price}
                   {...register("price")}
+                  defaultValue={price}
                   className="border rounded w-full py-2 px-3"
+                  placeholder="Enter product price"
                 />
-                {errors.price && (
-                  <p className="text-red-500 text-sm mt-1">Price is required</p>
-                )}
               </div>
 
               <div className="mb-4">
@@ -182,14 +171,36 @@ const UpdateProductPage = () => {
                   className="border rounded w-full py-2 px-3"
                 >
                   <option value={category}>{category}</option>
+                  <option value="Personal Care">Personal Care</option>
+                  <option value="Clothing">Clothing</option>
                   <option value="Electronics">Electronics</option>
-                  <option value="Sports & Outdoors">Sports & Outdoors</option>
-                  <option value="Home & Kitchen">Home & Kitchen</option>
-                  <option value="Home Appliances">Home Appliances</option>
-                  <option value="Apparel">Apparel</option>
-                  <option value="Home Security">Home Security</option>
+                  <option value="Outdoor">Outdoor</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Home">Home</option>
+                  <option value="Fitness">Fitness</option>
                 </select>
               </div>
+
+              <div className="mb-4">
+                <label
+                  htmlFor="brand"
+                  className="block text-gray-700 font-bold mb-2"
+                >
+                  Brand
+                </label>
+                <select
+                  id="brand"
+                  {...register("brand")}
+                  className="border rounded w-full py-2 px-3"
+                >
+                  <option value={brand}>{brand}</option>
+                  <option value="GreenLiving">GreenLiving</option>
+                  <option value="EcoWear">EcoWear</option>
+                  <option value="SoundMax">SoundMax</option>
+                  <option value="BrightHome">BrightHome</option>
+                </select>
+              </div>
+
               <div className="mb-4">
                 <label
                   htmlFor="ratings"
@@ -199,14 +210,11 @@ const UpdateProductPage = () => {
                 </label>
                 <input
                   type="number"
-                  step="0.5"
                   id="ratings"
+                  {...register("ratings", { min: 1, max: 5 })}
                   defaultValue={ratings}
-                  {...register("ratings", {
-                    min: 1,
-                    max: 5,
-                  })}
                   className="border rounded w-full py-2 px-3"
+                  placeholder="Enter product ratings"
                 />
               </div>
 
@@ -215,7 +223,7 @@ const UpdateProductPage = () => {
                   className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                   type="submit"
                 >
-                  Add Product
+                  Update Product
                 </button>
               </div>
             </form>

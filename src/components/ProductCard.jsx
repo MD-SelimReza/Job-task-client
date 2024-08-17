@@ -7,6 +7,7 @@ const ProductCard = ({ product }) => {
     _id,
     product_name,
     product_image,
+    brand,
     price,
     category,
     ratings,
@@ -14,7 +15,12 @@ const ProductCard = ({ product }) => {
   } = product;
 
   const formatDate = (isoDate) => {
-    return format(new Date(isoDate), "MMMM d, yyyy");
+    // Check if isoDate is valid
+    const date = new Date(isoDate);
+    if (isNaN(date.getTime())) {
+      return "Invalid Date"; // Handle invalid dates
+    }
+    return format(date, "MMMM d, yyyy");
   };
 
   const formattedDate = formatDate(createdAt);
@@ -33,7 +39,7 @@ const ProductCard = ({ product }) => {
         <div className="font-bold text-xl mb-2">{product_name}</div>
         <p className="text-gray-700 text-base">{category}</p>
         <span className="text-xs text-green-500 bg-green-100 px-2 py-1 rounded-full inline-block mb-2">
-          New
+          {brand}
         </span>
         <div className="flex justify-between">
           <div>
