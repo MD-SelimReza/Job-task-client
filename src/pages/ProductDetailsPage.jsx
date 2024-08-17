@@ -8,16 +8,24 @@ import Spinner from "../components/Spinner";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 
+const fetchSingleProduct = (id) => {
+  return axios.get(`${baseURL}/products/${id}`);
+};
+
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { isLoading, data } = useQuery("productData", () => {
-    return axios.get(`${baseURL}/products/${id}`);
-  });
+  const { isLoading, data, isError, error } = useQuery("productData", () =>
+    fetchSingleProduct(id)
+  );
 
   if (isLoading) {
     return <Spinner />;
+  }
+
+  if (isError) {
+    return <h2>{error.message}</h2>;
   }
 
   const {
@@ -52,10 +60,8 @@ const ProductDetailsPage = () => {
     try {
       // Send DELETE request to the backend
       const response = await axios.delete(`${baseURL}/products/${id}`);
-
       // Handle successful deletion
       toast.success(response?.data?.message || "Product deleted successfully");
-
       // Optionally redirect after deletion
       navigate("/products"); // Uncomment if you want to navigate after deletion
     } catch (error) {

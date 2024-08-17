@@ -7,24 +7,19 @@ import ViewAllProducts from "../components/ViewAllProducts";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { baseURL } from "../url/baseURL";
-import Spinner from "../components/Spinner";
 
 const HomePage = () => {
   const { isLoading, data } = useQuery("productData", () => {
     return axios.get(`${baseURL}/products`);
   });
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
-  const productData = data?.data;
+  const productData = data?.data?.data;
 
   return (
     <>
       <Hero />
       <HomeCard />
-      <ProductListings data={productData} />
+      <ProductListings data={productData} isLoading={isLoading} />
       <ViewAllProducts />
       <NewsLetter />
     </>
